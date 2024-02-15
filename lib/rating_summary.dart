@@ -26,6 +26,7 @@ class RatingSummary extends StatelessWidget {
     Key? key,
     required this.counter,
     this.average = 0.0,
+    this.showCounter=true,
     this.showAverage = true,
     this.averageStyle = const TextStyle(
       fontWeight: FontWeight.bold,
@@ -42,15 +43,15 @@ class RatingSummary extends StatelessWidget {
     this.labelCounterTwoStars = '2',
     this.labelCounterOneStars = '1',
     this.labelCounterFiveStarsStyle =
-        const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
     this.labelCounterFourStarsStyle =
-        const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
     this.labelCounterThreeStarsStyle =
-        const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
     this.labelCounterTwoStarsStyle =
-        const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
     this.labelCounterOneStarsStyle =
-        const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
     this.label = 'Ratings',
     this.labelStyle = const TextStyle(fontWeight: FontWeight.w600),
     this.color = Colors.amber,
@@ -74,6 +75,7 @@ class RatingSummary extends StatelessWidget {
   ///
   /// If true, the average rating will be displayed. If not specified, the default value is true.
   final bool showAverage;
+  final bool showCounter;
 
   /// The style of the [average] rating.
   ///
@@ -183,8 +185,45 @@ class RatingSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
+        if (showAverage) ...[
+          const SizedBox(width: 15),
+          Flexible(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(average.toStringAsFixed(1), style: averageStyle),
+                RatingBarIndicator(
+                  rating: average,
+                  itemSize: 25,
+                  unratedColor: backgroundColor,
+                  itemBuilder: (context, index) {
+                    return Row(
+                      children: [
+                        Icon(Icons.star, color: color,),
+                        SizedBox(
+                          width: 5,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                if(showCounter) ...[
+                  Text("$counter $label",style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      overflow: TextOverflow.fade
+                  ),),
+                ],
+                const SizedBox(height: 10),
+
+              ],
+            ),
+          ),
+        ],
+        const SizedBox(width: 20),
+
+
         Flexible(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -227,31 +266,8 @@ class RatingSummary extends StatelessWidget {
             ],
           ),
         ),
-        if (showAverage) ...[
-          const SizedBox(width: 30),
-          Flexible(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(average.toStringAsFixed(1), style: averageStyle),
-                RatingBarIndicator(
-                  rating: average,
-                  itemSize: 28,
-                  unratedColor: backgroundColor,
-                  itemBuilder: (context, index) {
-                    return Icon(Icons.star, color: color);
-                  },
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "$counter $label",
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.fade,
-                ),
-              ],
-            ),
-          ),
-        ],
+        const SizedBox(width: 15),
+
       ],
     );
   }
@@ -276,7 +292,7 @@ class _ReviewBar extends StatelessWidget {
     this.color = Colors.amber,
     this.backgroundColor = const Color(0xFFEEEEEE),
     this.labelStyle =
-        const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+    const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
   }) : super(key: key);
 
   /// The label of the bar.
@@ -316,7 +332,8 @@ class _ReviewBar extends StatelessWidget {
             label,
             style: labelStyle,
           ),
-          const SizedBox(width: 20),
+          Icon(Icons.star,color: color,size: 15,),
+          const SizedBox(width: 10),
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
@@ -324,6 +341,7 @@ class _ReviewBar extends StatelessWidget {
                 height: 10,
                 child: LinearProgressIndicator(
                   value: value,
+                  borderRadius: BorderRadius.circular(8),
                   valueColor: AlwaysStoppedAnimation<Color>(color),
                   backgroundColor: backgroundColor,
                 ),
